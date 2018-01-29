@@ -4,7 +4,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
-from helpers import apology, login_required, lookup, usd,refreshIndex
+from helpers import apology, login_required
 
 # Configure application
 app = Flask(__name__)
@@ -27,24 +27,13 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///finance.db")
 
-@app.route("/")
-@login_required
+@app.route("/",methods=["GET", "POST"])
+#@login_required
 def index():
-    symbol = db.execute("SELECT sum (shares) as shares, symbol, name , price, sum(total) as total FROM history WHERE id =:id group by symbol,name",
-    id = session["user_id"])
-    cash = db.execute("SELECT cash FROM users WhERE id =:id ",id = session["user_id"])
-    shares = 0
-    totals = []
-    for element in symbol:
+  #  if request.method == "POST":
+   #     return redirect("/")
+    return render_template("index.html")
 
-        if element != None:
-
-            refreshIndex(element,shares,totals)
-
-    total = sum(totals)
-
-    big_total = float(total) + float(cash[0]["cash"])
-    return render_template("index.html",stocks = symbol,cash = usd(cash[0]["cash"]),total = usd(big_total) )
 
 
 @app.route("/logout")
@@ -94,8 +83,3 @@ def login():
     else:
         return render_template("login.html")
 
-@app.route("/indexe", methods=["GET", "POST"])
-def indexe():
-    if request.method == "POST":
-        return redirect("/")
-    return render_template("indexe.html")
