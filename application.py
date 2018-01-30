@@ -5,6 +5,8 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required
+from Get_User_Data import User_Data
+
 
 # Configure application
 app = Flask(__name__)
@@ -25,15 +27,14 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///sport.db")
 
 @app.route("/",methods=["GET", "POST"])
-#@login_required
+@login_required
 def index():
-  #  if request.method == "POST":
-   #     return redirect("/")
-    return render_template("index.html")
-
+    """TODO"""
+    """at this point you should only display the event form the database and return a html page"""
+    return "hello user"
 
 
 @app.route("/logout")
@@ -49,7 +50,7 @@ def logout():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
+    # make this clean
     # Forget any user_id
 
     session.clear()
@@ -66,7 +67,7 @@ def login():
             return apology("must provide password", 403)
 
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
+        rows = db.execute("SELECT * FROM users WHERE email = :username",
                           username=request.form.get("username"))
 
         # Ensure username exists and password is correct
@@ -74,7 +75,7 @@ def login():
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = rows[0]["id"]
+        session["id"] = rows[0]["id"]
 
         # Redirect user to home page
         return redirect("/")
@@ -82,4 +83,66 @@ def login():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    # Forget any user_id
+    session.clear()
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+        # Ensure username was submitted
+        if not request.form.get("email"):
+            return apology("Missing the E-mail")
+        if not request.form.get("username"):
+            return apology("Missing the name")
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password")
+        elif not request.form.get("confirmation"):
+            return apology("must provide password")
+        elif request.form.get("password") != request.form.get("confirmation"):
+            return apology("not match")
+        # Insert the data of the seller
+        username = request.form.get("username")
+        password = request.form.get("password")
+        email = request.form.get("email")
+        hash = generate_password_hash(password)
+        dbMan = User_Data()
+        # Insert the data of the new user
+        newUser = dbMan.create_user(username, hash, email)
+        if not newUser:
+            return apology("You are Already registered", 400)
+       # Remember which user has logged in
+        session["id"] = newUser
+        # Redirect user to register page
+        return redirect("/")
+    else:
+        return render_template("register.html")
+
+
+@app.route("/start",methods=["GET", "POST"])
+def start():
+    if request.method == "POST":
+        return redirect("/register")
+    return render_template("start.html")
+
+"""@app.route("/createvent", methods=["GET", "POST"])
+def createvent():
+    TODO
+        just creat the event and send it to data base
+    return
+
+@app.route("/joinevent", methods=["GET", "POST"])
+def joinevent():
+    TODO
+        allow the user to join the data base
+    return
+
+@app.route("/event", methods=["GET", "POST"])
+def createvent():
+    TODO
+        info about the event it self
+    return"""
+
 
