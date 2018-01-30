@@ -15,3 +15,6 @@ class User_Data:
         return self.db.execute("INSERT INTO users (username, hash, email) VALUES(:username,:hash, :email)",
                                     username=username,hash= hash, email=email)
 
+    def get_user_info(self, username):
+        return self.db.execute("SELECT * FROM users WHERE username = :username", username=username)
+
