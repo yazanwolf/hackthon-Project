@@ -1,4 +1,3 @@
-
 from cs50 import SQL
 from flask import  request
 from flask_session import Session
@@ -8,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 class User_Data:
     def __init__ (self):
         # Configure CS50 Library to use SQLite database
-        self.db = SQL("sqlite:///finance.db")
+        self.db = SQL("sqlite:///sport.db")
 
     def create_user(self, username, hash, email):
 
@@ -18,3 +17,5 @@ class User_Data:
     def get_user_info(self, username):
         return self.db.execute("SELECT * FROM users WHERE username = :username", username=username)
 
+    def check_user(self, email):
+        return self.db.execute("SELECT * FROM users WHERE email = :email", email = email)

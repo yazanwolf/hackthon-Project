@@ -5,11 +5,13 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/" method="post">
-
+    <form action="/login" method="post">
         <div class="form-group">
-            <input name="email" class="btn btn-outline-secondary" placeholder="email">email</input>
-            <input name="password" class="btn btn-primary btn-lg" placeholder="password">Password </input>
+            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
         </div>
+        <div class="form-group">
+            <input class="form-control" name="password" placeholder="Password" type="password"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Log In</button>
     </form>
 {% endblock %}
