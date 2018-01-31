@@ -149,6 +149,7 @@ def createvent():
         dbMann = User_Data()
         newEvent = dbMann.createNewEvent(eventDate, eventPlace, eventType, eventName)
         return redirect("/register")
+        print("hello")
     else:
         return render_template("screatevent.html")
 
