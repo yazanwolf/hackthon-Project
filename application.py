@@ -109,6 +109,7 @@ def register():
         email = request.form.get("email")
         hash = generate_password_hash(password)
         dbMan = User_Data()
+        print("1")
         # Insert the data of the new user
         newUser = dbMan.create_user(username, hash, email)
         if not newUser:
@@ -127,13 +128,33 @@ def start():
         return redirect("/register")
     return render_template("start.html")
 
-"""@app.route("/createvent", methods=["GET", "POST"])
+@app.route("/createvent", methods=["GET", "POST"])
+@login_required
 def createvent():
-    TODO
-        just creat the event and send it to data base
-    return
 
-@app.route("/joinevent", methods=["GET", "POST"])
+    """Allow the user to create events from a list"""
+    if request.method == "POST":
+        eventName = request.form.get("eventname")
+        if not eventName:
+            return apology("please enter the event name")
+        eventDate = request.form.get("eventdate")
+        if not eventDate:
+            return apology("please enter the event date")
+        eventPlace = request.form.get("eventplace")
+        if not eventPlace:
+            return apology("please enter the event place")
+        eventType = request.form.get("eventtype")
+        if not eventPlace:
+            return apology("please enter the event type")
+        dbMann = User_Data()
+        newEvent = dbMann.createNewEvent(eventDate, eventPlace, eventType, eventName)
+        return redirect("/register")
+    else:
+        return render_template("screatevent.html")
+
+
+
+"""@app.route("/joinevent", methods=["GET", "POST"])
 def joinevent():
     TODO
         allow the user to join the data base
