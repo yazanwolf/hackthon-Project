@@ -6,7 +6,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required
 from data_base import User_Data
 
-
 # Configure application
 app = Flask(__name__)
 
@@ -29,10 +28,9 @@ Session(app)
 sql_man = User_Data()
 
 @app.route("/",methods=["GET", "POST"])
-@login_required
 def index():
     events = sql_man.get_events()
-    return render_template("index.html", events=events)
+    return render_template("login.html")
 
 
 @app.route("/logout")
@@ -52,16 +50,16 @@ def login():
     # Forget any user_id
 
     session.clear()
-
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         username = request.form.get("username")
+        password = request.form.get("password")
         # Ensure username was submitted
-        if not request.form.get("username"):
+        if not username:
             return apology("must provide username", 403)
 
         # Ensure password was submitted
-        elif not request.form.get("password"):
+        if not password:
             return apology("must provide password", 403)
 
         # Query database for username
@@ -75,9 +73,8 @@ def login():
         session["id"] = rows[0]["id"]
 
         # Redirect user to home page
-        flash("Welcome " + username)
-        return redirect("/")
-
+        flash("welcome " + username)
+        return redirect("/start")
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
@@ -130,9 +127,9 @@ def register():
 
 @app.route("/start", methods=["GET", "POST"])
 def start():
-    if request.method == "POST":
-        return redirect("/register")
-    return render_template("start.html")
+    if request.method == "GET":
+        return render_template("start.html")
+    return render_template("index.html")
 
 @app.route("/create", methods=["GET", "POST"])
 @login_required
