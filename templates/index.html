@@ -5,21 +5,26 @@
 {% endblock %}
 
 {% block main %}
-<form action="/index" method="post">
-    <table style="width:100%">
-      <tr>
-        <th>Event</th>
-        <th>Place</th>
-        <th>Date</th>
-      </tr>
-      <tr>
-        {% for event in events %}
-        <td>{{event.eventname}}</td>
-        <td>{{event.place}}</td>
-        <td>{{event.date}}</td>
-        <td>{{event.type}}</td>
-        {% endfor %}
-      </tr>
+<form action="/" method="post">
+    <table style="width:100%" class="table_style">
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Place</th>
+            <th>Date</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for event in events %}
+          <tr>
+            <td>{{ event.eventname }}</td>
+            <td>{{ event.place }}</td>
+            <td>{{ event.date }}</td>
+            <td>{{ event.type }}</td>
+          </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </form>
 {% endblock %}

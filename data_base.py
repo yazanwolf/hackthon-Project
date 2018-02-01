@@ -10,7 +10,6 @@ class User_Data:
         self.db = SQL("sqlite:///sport.db")
 
     def create_user(self, username, hash, email):
-
         return self.db.execute("INSERT INTO users (username, hash, email) VALUES(:username,:hash, :email)",
                                     username=username,hash= hash, email=email)
 
@@ -20,9 +19,12 @@ class User_Data:
     def check_user(self, email):
         return self.db.execute("SELECT * FROM users WHERE email = :email", email = email)
 
-    def create_new_event(self, eventDate, eventPlace, eventType, eventName):
-        return self.db.execute("INSERT INTO index (date, place, type, eventname) VALUES (:date, :place, :type, :eventname)", date = eventDate, place = eventPlace ,type = eventType, eventname = eventName)
+    def create_new_event(self, id, eventDate, eventPlace, eventType, eventName):
+        return self.db.execute("INSERT INTO events (id ,date, place, type, eventname, created, joined) VALUES (:id, :date, :place, :type, :eventname, :true, :false)",
+                                        id=id, date = eventDate, place = eventPlace ,type = eventType, eventname = eventName, true=1, false=0)
 
     def get_events(self):
-        return self.db.execute("SELECT eventname FROM index WHERE created")
+        return self.db.execute("SELECT * FROM events WHERE created")
 
+    def get_available_events(self):
+        return self.db.execute("SELECT SUM (participant) FROM events GROUP BY eventname WHERE participant = :1")

@@ -31,7 +31,8 @@ sql_man = User_Data()
 @app.route("/",methods=["GET", "POST"])
 @login_required
 def index():
-    return render_template("index.html")
+    events = sql_man.get_events()
+    return render_template("index.html", events=events)
 
 
 @app.route("/logout")
@@ -42,7 +43,7 @@ def logout():
     session.clear()
 
     # Redirect user to login form
-    return redirect("/")
+    return render_template("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -74,6 +75,7 @@ def login():
         session["id"] = rows[0]["id"]
 
         # Redirect user to home page
+        flash("Welcome " + username)
         return redirect("/")
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -90,6 +92,10 @@ def register():
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
 
+        username = request.form.get("username")
+        password = request.form.get("password")
+        email = request.form.get("email")
+
         # Ensure username was submitted
         if not request.form.get("email"):
             return apology("Missing the E-mail")
@@ -105,11 +111,7 @@ def register():
             return apology("not match")
 
         # Insert the data of the seller
-        username = request.form.get("username")
-        password = request.form.get("password")
-        email = request.form.get("email")
         hash = generate_password_hash(password)
-        print("1")
 
         # Insert the data of the new user
         newUser = sql_man.create_user(username, hash, email)
@@ -120,12 +122,13 @@ def register():
         session["id"] = newUser
 
         # Redirect user to register page
+        flash("Welcome " + username)
         return redirect("/")
     else:
         return render_template("register.html")
 
 
-@app.route("/start",methods=["GET", "POST"])
+@app.route("/start", methods=["GET", "POST"])
 def start():
     if request.method == "POST":
         return redirect("/register")
@@ -134,7 +137,6 @@ def start():
 @app.route("/create", methods=["GET", "POST"])
 @login_required
 def createvent():
-
     """Allow the user to create events from a list"""
     if request.method == "POST":
         eventName = request.form.get("eventName")
@@ -153,17 +155,19 @@ def createvent():
 
         if not eventPlace:
             return apology("please enter the event type")
-        session["id"] = id
-        events = sql_man.create_new_event(eventDate, eventPlace, eventType, eventName)
-        return redirect("index.html")
+        # session["id"] = id
+        new_event = sql_man.create_new_event(session["id"], eventDate, eventPlace, eventType, eventName)
+        events = sql_man.get_events()
+        return render_template("index.html", events = events)
     else:
         return render_template("create.html")
-
-
 
 @app.route("/joinevent", methods=["GET", "POST"])
 @login_required
 def joinevent():
     if request.method == "POST":
-        events = sql_man.get_events()
+        events = sql_man.get_available_events()
+        for event in events:
+            print(event)
         return render_template("index.html", events = events)
+    return render_template("index.html")

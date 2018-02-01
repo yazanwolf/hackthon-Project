@@ -56,3 +56,11 @@ body {
     background-repeat :no-repeat;
     background-size: cover;
 }
+
+.table_style{
+    font-family:Jazz LET, fantasy;
+    color: white;
+    font-size: 140%;
+    text-shadow: 2px 2px 5px gray;
+    background-color: black;
+}
