@@ -41,7 +41,7 @@ def logout():
     session.clear()
 
     # Redirect user to login form
-    return render_template("/")
+    return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -155,7 +155,7 @@ def createvent():
         # session["id"] = id
         new_event = sql_man.create_new_event(session["id"], eventDate, eventPlace, eventType, eventName)
         events = sql_man.get_events()
-        return render_template("index.html", events = events)
+        return render_template("start.html")
     else:
         return render_template("create.html")
 
@@ -168,3 +168,12 @@ def joinevent():
             print(event)
         return render_template("index.html", events = events)
     return render_template("index.html")
+
+@app.route("/eventspage", methods=["GET", "POST"])
+@login_required
+def eventspage():
+    events = sql_man.get_available_events()
+    if request.method == "GET":
+        return render_template("eventspage.html", events = events)
+    return render_template("start.html")
+

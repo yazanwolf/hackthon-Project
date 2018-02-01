@@ -27,4 +27,7 @@ class User_Data:
         return self.db.execute("SELECT * FROM events WHERE created")
 
     def get_available_events(self):
-        return self.db.execute("SELECT SUM (participant) FROM events GROUP BY eventname WHERE participant = :1")
+        return self.db.execute("SELECT *FROM events  WHERE participant = 1 group by eventname")
+
+"""symbol = db.execute("SELECT sum (shares) as shares, symbol, name , price, sum(total) as total FROM history WHERE id =:id group by symbol,name",
+    id = session["user_id"])"""
