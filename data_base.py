@@ -32,3 +32,12 @@ class User_Data:
     def join_event(self, id, event_id):
         return self.db.execute("INSERT INTO user_events (user_id, event_id) VALUES (:id, :event_id)", id=id, event_id=event_id)
 
+    def already_participant(self, id, event):
+        participants = self.db.execute("SELECT * FROM user_events")
+        for participant in participants:
+            existed_participant = participant["user_id"]
+            existed_event = participant["event_id"]
+            if int(existed_participant) == int(id) and int(existed_event) == int(event):
+                return True
+        return False
+

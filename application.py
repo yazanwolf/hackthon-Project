@@ -172,13 +172,10 @@ def joinevent():
 @login_required
 def eventspage():
     events = sql_man.get_available_events()
-    print(1)
-    event_id = request.form.get("join")
-    print("worked " + event_id)
-    if event_id:
-        print("worked 1")
-        print(event_id)
-        sql_man.join_event(session["id"], event_id)
-        print("worked 2 ")
+    wanted_event = request.form.get("join")
+    if sql_man.already_participant(session["id"], wanted_event):
+        flash("you're already participating!")
+        return render_template("eventspage.html", events = events)
+    sql_man.join_event(session["id"], wanted_event)
+    flash("you're in!")
     return render_template("eventspage.html", events = events)
-
