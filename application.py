@@ -126,6 +126,7 @@ def register():
 
 
 @app.route("/start", methods=["GET", "POST"])
+@login_required
 def start():
     if request.method == "GET":
         return render_template("start.html")
@@ -162,18 +163,22 @@ def createvent():
 @app.route("/joinevent", methods=["GET", "POST"])
 @login_required
 def joinevent():
-    if request.method == "POST":
+    if request.method == "GET":
         events = sql_man.get_available_events()
-        for event in events:
-            print(event)
-        return render_template("index.html", events = events)
+        return render_template("eventspage.html", events = events)
     return render_template("index.html")
 
 @app.route("/eventspage", methods=["GET", "POST"])
 @login_required
 def eventspage():
     events = sql_man.get_available_events()
-    if request.method == "GET":
-        return render_template("eventspage.html", events = events)
-    return render_template("start.html")
+    print(1)
+    event_id = request.form.get("join")
+    print("worked " + event_id)
+    if event_id:
+        print("worked 1")
+        print(event_id)
+        sql_man.join_event(session["id"], event_id)
+        print("worked 2 ")
+    return render_template("eventspage.html", events = events)
 
